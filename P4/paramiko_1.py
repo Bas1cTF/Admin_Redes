@@ -1,0 +1,50 @@
+#!/usr/bin/python3
+
+import paramiko, time
+
+def activate_ospf(ip, id_red, mask):
+    conexion = paramiko.SSHClient()
+    conexion.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    conexion.connect(ip, username='admin', password='admin', look_for_keys=False, allow_agent=False)
+    nueva_conexion = conexion.invoke_shell()
+    nueva_conexion.send("conf t\n")
+    #time.sleep(2)
+    nueva_conexion.send("router ospf 1\n")
+    #time.sleep(2)
+    nueva_conexion.send("redistribute rip subnets\n")
+    #time.sleep(2)
+    nueva_conexion.send("redistribute static subnets\n")
+    #time.sleep(2)
+    nueva_conexion.send("network "+id_red+" "+mask+" area 0\n")
+    #time.sleep(2)
+    nueva_conexion.close()
+
+def activate_static(ip, id_red, mask, jump):
+    conexion = paramiko.SSHClient()
+    conexion.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    conexion.connect(ip, username='admin', password='admin', look_for_keys=False, allow_agent=False)
+    nueva_conexion = conexion.invoke_shell()
+    nueva_conexion.send("conf t\n")
+    #time.sleep(2)
+    nueva_conexion.send("ip route "+id_red+" "+mask+" "+jump+"\n")
+    #time.sleep(2)
+    nueva_conexion.close()
+
+def activate_rip(ip, id_red):
+    conexion = paramiko.SSHClient()
+    conexion.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    conexion.connect(ip, username='admin', password='admin', look_for_keys=False, allow_agent=False)
+    nueva_conexion = conexion.invoke_shell()
+    nueva_conexion.send("conf t\n")
+    #time.sleep(3)
+    nueva_conexion.send("router rip\n")
+    #time.sleep(3)
+    nueva_conexion.send("version 2\n")
+    #time.sleep(3)
+    nueva_conexion.send("redistribute ospf 1 metric 1\n")
+    #time.sleep(3)
+    nueva_conexion.send("redistribute static\n")
+    #time.sleep(3)
+    nueva_conexion.send("network "+id_red+"\n")
+    #time.sleep(3)
+    nueva_conexion.close()
