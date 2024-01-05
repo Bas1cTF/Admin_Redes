@@ -1,0 +1,25 @@
+conf t
+username cisco priv 15 pass cisco
+service password-encryption
+ip domain-name adminredes.escom.ipn.mx
+ip ssh rsa keypair-name sshkey
+crypto key generate rsa usage-keys label sshkey modulus 1024
+ip ssh v 2
+ip ssh time-out 30
+ip ssh authentication-retries 3
+line vty 0 15
+pass cisco
+login local
+transport input ssh telnet
+exit
+username cisco priv 15 pass cisco
+
+## telnet
+
+conf t
+username cisco priv 15 pass cisco
+service password-encryption
+ip domain-name adminredes.escom.ipn.mx
+line vty 0 15
+pass cisco
+login local
